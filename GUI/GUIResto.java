@@ -5,8 +5,6 @@ import java.awt.event.*;
 import javax.swing.border.EmptyBorder;
 
 import java.awt.image.BufferedImage;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 
 public class GUIResto extends JFrame{
     
