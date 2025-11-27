@@ -3,7 +3,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.border.EmptyBorder;
-
 import java.awt.image.BufferedImage;
 
 public class GUIResto extends JFrame{
@@ -11,6 +10,7 @@ public class GUIResto extends JFrame{
     // << Atributos de la aplicación >>
     private Resto resto;
     private int numeroMesaSeleccionada;
+    private Container contenedor = getContentPane();
     
     //Objetos Gráficos
     //PANEL MENU
@@ -31,11 +31,17 @@ public class GUIResto extends JFrame{
     private JPanel panelOcuparDesocupar; 
     private JButton botonOcuparMesa;
     private JButton botonDesocuparMesa;
+    // Combos
+    ColCombos combos;
+
+    //AT
+    private int lengthBotones,lengthEtiquetas;
     
     public GUIResto(Resto r){
         super("Bienvenido al IPOO-Resto: Mesas");
         resto= r;
         numeroMesaSeleccionada=-1;
+        combos = (ColCombos) resto.obtenerStockMenu();
         
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(new Dimension(1100, 800));
@@ -47,15 +53,15 @@ public class GUIResto extends JFrame{
         armarBotones();
         armarEtiquetas();
 
-        getContentPane().setLayout(new BorderLayout()); 
+        contenedor.setLayout(new BorderLayout()); 
 
         //Agrego cada panel al panel de contenido
-        getContentPane().add(panelResto, BorderLayout.CENTER);
-        getContentPane().add(panelMesa, BorderLayout.EAST);
-        getContentPane().add(panelMenu, BorderLayout.SOUTH);
+        contenedor.add(panelResto, BorderLayout.CENTER);
+        contenedor.add(panelMesa, BorderLayout.EAST);
+        contenedor.add(panelMenu, BorderLayout.SOUTH);
         
         this.setVisible(true);
-        this.setResizable(false);
+        this.setResizable(true);        //Recordar cambiar a false
     }
 
     
@@ -90,12 +96,28 @@ public class GUIResto extends JFrame{
     private void inicializarPanelMenu(){
 
         //Crear paneles y establecer diagramado
+        panelMenu = new JPanel();
         
-        //Crear botones, registrar oyentes e insertar en el panel de Menu      
+        //Crear botones, registrar oyentes e insertar en el panel de Menu
+        boton = new JButton[5];
+        lengthBotones = boton.length;
+        for(int i=0; i<boton.length;i++){
+            boton[i] = new JButton("");
+            OyenteMesa oyenteMesa = new OyenteMesa();
+            boton[i].addActionListener(oyenteMesa);
+            panelMenu.add(boton[i]);
+        }
         
-        //Crear etiquetas e insertarlas en el panel de Menu       
+        //Crear etiquetas e insertarlas en el panel de Menu
+        etiqueta = new JLabel[5];
+        lengthEtiquetas = lengthEtiquetas;
+        for(int i=0;i<etiqueta.length;i++){
+            etiqueta[i] = new JLabel("");
+            panelMenu.add(etiqueta[i]);
+        }
 
         //Al inicio, el panel del Menu no está visible
+        panelMenu.setEnabled(false);
     }
     
     
@@ -121,6 +143,15 @@ public class GUIResto extends JFrame{
         /* TODO
          * Crear los botones botonOcuparMesa y botonDesocuparMesa e insertarlos en el panel correspondiente. 
          * Declarar, crear y registrar los oyentes para esos botones.*/
+        botonOcuparMesa = new JButton("Ocupar Mesa");
+        panelOcuparDesocupar.add(botonOcuparMesa);
+        OyenteOcuparMesa oyenteOcupar = new OyenteOcuparMesa();
+        botonOcuparMesa.addActionListener(oyenteOcupar);
+
+        botonDesocuparMesa = new JButton("Liberar Mesa");
+        panelOcuparDesocupar.add(botonDesocuparMesa);
+        OyenteLiberarMesa oyenteLiberar = new OyenteLiberarMesa();
+        botonDesocuparMesa.addActionListener(oyenteLiberar);
         
         panelMesa.add(etiquetaMesaSeleccionada, BorderLayout.PAGE_START);
         panelMesa.add(panelDetalle, BorderLayout.CENTER);     
@@ -134,16 +165,24 @@ public class GUIResto extends JFrame{
      * información específica de cada combo, como la imagen, la descripción y otros datos relevantes. Además setea el actionCommand con el
      * nombre del combo.
      */
-    private void armarBotones(){    
-        
+    private void armarBotones(){
+        for(int i=0;i<lengthBotones;i++){
+            Combo comboActual = combos.obtenerCombo(i);
+            boton[i].setIcon(new ImageIcon("images/combo "+ (i+1)+".png"));
+            boton[i].setText("Combo #"+ i +".Nombre del combo: "+ comboActual.getDescripcion());
+            
+        }
     }
-    
+
     /*TODO
      * Implementar el método armarEtiquetas(). Configura las etiquetas generadas en el método inicializarPanelMenu(), 
      * incorporando en cada una el precio del combo y la cantidad de unidades disponibles en stock.
      */
-    private void armarEtiquetas(){    
-        
+    private void armarEtiquetas(){
+        for(int i=0;i<lengthEtiquetas;i++){
+            Combo comboActual = combos.obtenerCombo(i);
+            etiqueta[i].setText("Precio: "+comboActual.getPrecio()+"\nStock: "+comboActual.getCantidad());
+        }
     }
 
     private ImageIcon escalarIcono(String ruta, int ancho, int alto) {
@@ -176,9 +215,11 @@ public class GUIResto extends JFrame{
         public void actionPerformed(ActionEvent e){
             //Obtener el número de la mesa seleccionada y la mesa del resto con dicho número
             
+            
             //Modificar la etiqueta con la mesa seleccionada 
             //Modificar la etiqueta con el detalle parcial
             //Hacer visible el panel de la Mesa
+            panelMesa.setEnabled(true);
             
             //Si la mesa no está ocupada entonces se oculta el panel de detalle, y se setea la visibilidad de los botones ocupar/desocupar mesa 
             //Sino se muestra el panel de detalle, y si la mesa no alcanzó el máximo de pedidos posibles, se setea la visibilidad del botón para agregar
@@ -240,4 +281,5 @@ public class GUIResto extends JFrame{
            
         } 
     }
+
 }
