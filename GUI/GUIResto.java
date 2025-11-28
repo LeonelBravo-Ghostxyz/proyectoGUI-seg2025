@@ -304,6 +304,16 @@ public class GUIResto extends JFrame{
            panelMenu.setVisible(true);
            activarBotonesMesas(false);
            botonDesocuparMesa.setVisible(false);
+
+           /* BugFix 
+           int cont = 0;
+           for(int i=0;i<5;i++){
+            cont = cont + resto.obtenerStockMenu().obtenerCombo(i).getCantidad();
+           }
+           if(cont <= 1){
+            botonAgregarItem.setEnabled(false);
+           }
+           */
         } 
     }
     
@@ -318,6 +328,7 @@ public class GUIResto extends JFrame{
 
             //Se visibiliza el boton para agregar nuevos ítems
             botonAgregarItem.setVisible(true);
+            botonAgregarItem.setEnabled(true);
             
             botonMesas[numeroMesaSeleccionada-1].setIcon(escalarIcono("images/mesaOcupada2.png", 200, 200));
             //Se actualiza el detalle del pedido
