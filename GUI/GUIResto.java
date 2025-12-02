@@ -33,7 +33,8 @@ public class GUIResto extends JFrame{
     private JButton botonDesocuparMesa;
 
     //AT
-    ColCombos combos;
+    private boolean hayStock;
+    private ColCombos combos;
     private int lengthBotones,lengthEtiquetas;
     
     public GUIResto(Resto r){
@@ -61,6 +62,7 @@ public class GUIResto extends JFrame{
         
         this.setVisible(true);
         this.setResizable(true);        //Recordar cambiar a false
+        hayStock = true;
     }
 
     
@@ -244,7 +246,7 @@ public class GUIResto extends JFrame{
                 panelDetalle.setVisible(true);
                 botonDesocuparMesa.setVisible(true);
                 botonOcuparMesa.setVisible(false);
-                if(!mesaSeleccionada.alcanzoMaximoPedidos())
+                if(!mesaSeleccionada.alcanzoMaximoPedidos() && hayStock)
                     botonAgregarItem.setEnabled(true);
                 else botonAgregarItem.setEnabled(false);
             } else {
@@ -279,11 +281,10 @@ public class GUIResto extends JFrame{
             //Se agrega el combo a la mesa seleccionada.}
              mesaSeleccionada.obtenerPedido().agregarCombo(comboSeleccionado);
             //Si luego de agregar el combo, la mesa alcanzó el máximo de pedidos, se deshabilita el botón para agregar nuevos items. 
-            if(mesaSeleccionada.alcanzoMaximoPedidos()){
-                botonAgregarItem.setEnabled(false);
-            }
-            else{
+            if(!mesaSeleccionada.alcanzoMaximoPedidos() && hayStock){
                 botonAgregarItem.setEnabled(true);
+            }else{
+                botonAgregarItem.setEnabled(false);
             }
             
             //Se setea la etiqueta con el detalle parcial del pedido
@@ -305,15 +306,16 @@ public class GUIResto extends JFrame{
            activarBotonesMesas(false);
            botonDesocuparMesa.setVisible(false);
 
-           /* BugFix 
            int cont = 0;
            for(int i=0;i<5;i++){
             cont = cont + resto.obtenerStockMenu().obtenerCombo(i).getCantidad();
            }
            if(cont <= 1){
+            hayStock = false;
             botonAgregarItem.setEnabled(false);
+            System.out.println("No hay más stock disponible para agregar ítems.");
            }
-           */
+           
         } 
     }
     
@@ -328,7 +330,8 @@ public class GUIResto extends JFrame{
 
             //Se visibiliza el boton para agregar nuevos ítems
             botonAgregarItem.setVisible(true);
-            botonAgregarItem.setEnabled(true);
+            if(hayStock)
+                botonAgregarItem.setEnabled(true);
             
             botonMesas[numeroMesaSeleccionada-1].setIcon(escalarIcono("images/mesaOcupada2.png", 200, 200));
             //Se actualiza el detalle del pedido
