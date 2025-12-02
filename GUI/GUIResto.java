@@ -61,7 +61,7 @@ public class GUIResto extends JFrame{
         contenedor.add(panelMenu, BorderLayout.SOUTH);
         
         this.setVisible(true);
-        this.setResizable(true);        //Recordar cambiar a false
+        this.setResizable(false);
         hayStock = true;
     }
 
@@ -173,6 +173,7 @@ public class GUIResto extends JFrame{
         for(int i=0;i<lengthBotones;i++){
             Combo comboActual = combos.obtenerCombo(i);
             boton[i].setIcon(escalarIcono("images/combo "+ (i+1)+".png", 200, 80));
+            boton[i].setBackground(Color.WHITE);
             boton[i].setText("Combo "+ (i+1) +": "+ comboActual.getDescripcion());
             boton[i].setPreferredSize(new Dimension(300,120));
             boton[i].setVerticalTextPosition(JLabel.BOTTOM);
@@ -313,7 +314,6 @@ public class GUIResto extends JFrame{
            if(cont <= 1){
             hayStock = false;
             botonAgregarItem.setEnabled(false);
-            System.out.println("No hay más stock disponible para agregar ítems.");
            }
            
         } 
